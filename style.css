@@ -10,7 +10,7 @@ fieldset { border: 1px solid #8884; border-radius: 8px; margin: 0.8em 0; }
 fieldset label { margin: 0.4em 0; }
 input[type=text], select { width: 100%; font-size: 1em; padding: 10px; border-radius: 8px; border: 1px solid #8888; }
 button { font-size: 1em; padding: 14px 16px; border-radius: 10px; border: 0; background: var(--accent); color: #fff; min-height: 48px; }
-form > button, #resume, #rejoin { width: 100%; margin-top: 1.2em; }
+form > button, #resume, #rejoin, #shareLink { width: 100%; margin-top: 1.2em; }
 .buttons { display: grid; gap: 10px; }
 .buttons button { width: 100%; text-align: left; }
 button.quiet { background: transparent; color: CanvasText; border: 1px solid #8888; margin-top: 1.5em; }

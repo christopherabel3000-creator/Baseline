@@ -5,7 +5,7 @@
 <meta http-equiv="Cache-Control" content="no-cache">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Baseline</title>
-<link rel="stylesheet" href="style.css?v=5">
+<link rel="stylesheet" href="style.css?v=6">
 </head>
 <body>
 <main>
@@ -75,7 +75,9 @@
 
   <section id="lobby" hidden>
     <h1 id="lobbyText" tabindex="-1"></h1>
-    <p>Send this code to your friend. The match starts when they join.</p>
+    <p>Send your friend the invite link, or tell them the code. The match starts when they join.</p>
+    <button type="button" id="shareLink">Share invite link</button>
+    <p id="shareMsg" role="status"></p>
     <button type="button" id="lobbyCancel" class="quiet">Cancel</button>
   </section>
 
@@ -102,8 +104,8 @@
 </main>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
-<script src="engine.js?v=5"></script>
-<script src="net.js?v=5"></script>
-<script src="ui.js?v=5"></script>
+<script src="engine.js?v=6"></script>
+<script src="net.js?v=6"></script>
+<script src="ui.js?v=6"></script>
 </body>
 </html>

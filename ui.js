@@ -3,6 +3,8 @@
   var B = window.Baseline, Net = window.BaselineNet;
   var SAVE_KEY = 'baseline-save-v2';
   var ONLINE_KEY = 'baseline-online-v1';
+  var NAME_KEY = 'baseline-name';
+  var inviteCode = null;
   var $ = function (id) { return document.getElementById(id); };
 
   // game: { m, mode: cpu|pass|online, hide, humans, seen, holder, online: { code, me, ver, unwatch } }
@@ -51,6 +53,7 @@
     e.preventDefault();
     var mode = modeValue();
     var n1 = $('name1').value.trim() || 'Player 1';
+    remember(NAME_KEY, n1);
     if (mode === 'host') return hostRoom(n1);
     if (mode === 'join') return joinRoom(n1);
     var n2 = mode === 'cpu' ? 'Computer' : ($('name2').value.trim() || 'Player 2');
@@ -111,6 +114,8 @@
         if (!ok) { if (++tries < 5) return attempt(); setupMsg('Could not create a room. Try again.'); return; }
         remember(ONLINE_KEY, { code: code, me: 0, seen: 0 });
         $('lobbyText').textContent = 'Room code: ' + spell(code);
+        $('shareLink').dataset.code = code;
+        $('shareMsg').textContent = '';
         show('lobby');
         $('lobbyText').focus();
         lobbyUnwatch = Net.watch(code, function (room) {
@@ -425,5 +430,38 @@
     showSetup();
   });
 
-  showSetup();
+  // ---------- invite links ----------
+  function inviteURL(code) {
+    return location.origin + location.pathname + '?room=' + code;
+  }
+  $('shareLink').addEventListener('click', function () {
+    var url = inviteURL(this.dataset.code);
+    var text = 'Play me in Baseline tennis. Tap to join: ' + url;
+    if (navigator.share) {
+      navigator.share({ title: 'Baseline invite', text: 'Play me in Baseline tennis.', url: url })
+        .catch(function () { /* share sheet closed */ });
+      return;
+    }
+    var done = function () { $('shareMsg').textContent = 'Invite link copied.'; };
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(text).then(done, function () { $('shareMsg').textContent = url; });
+    } else $('shareMsg').textContent = url;
+  });
+
+  (function readInvite() {
+    var m = /[?&]room=([A-Za-z0-9]{5})/.exec(location.search);
+    if (!m) return;
+    inviteCode = m[1].toUpperCase();
+    try { history.replaceState(null, '', location.pathname); } catch (e) { /* ignore */ }
+  })();
+
+  var savedName = loadJSON(NAME_KEY);
+  if (savedName) $('name1').value = savedName;
+
+  if (inviteCode) {
+    document.querySelector('input[name=mode][value=join]').checked = true;
+    $('code').value = inviteCode;
+    showSetup('You are invited to a match. Check your name, then press Join match.');
+    $('name1').focus();
+  } else showSetup();
 })();
