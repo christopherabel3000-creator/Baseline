@@ -5,7 +5,7 @@
 <meta http-equiv="Cache-Control" content="no-cache">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Baseline</title>
-<link rel="stylesheet" href="style.css?v=3">
+<link rel="stylesheet" href="style.css?v=5">
 </head>
 <body>
 <main>
@@ -13,14 +13,21 @@
     <h1>Baseline</h1>
     <p>Tennis, one shot at a time.</p>
     <button type="button" id="resume" hidden>Resume saved match</button>
+    <button type="button" id="rejoin" hidden>Rejoin online match</button>
     <form id="setupForm">
       <fieldset>
         <legend>Opponent</legend>
         <label><input type="radio" name="mode" value="cpu" checked> Computer</label>
         <label><input type="radio" name="mode" value="pass"> Friend, passing the phone</label>
+        <label><input type="radio" name="mode" value="host"> Online: create a room</label>
+        <label><input type="radio" name="mode" value="join"> Online: join with a room code</label>
       </fieldset>
       <label for="name1">Your name</label>
       <input id="name1" type="text" value="Player 1" autocomplete="off" maxlength="20">
+      <div id="codeWrap" hidden>
+        <label for="code">Room code</label>
+        <input id="code" type="text" autocomplete="off" autocapitalize="characters" maxlength="5">
+      </div>
       <div id="name2Wrap" hidden>
         <label for="name2">Friend's name</label>
         <input id="name2" type="text" value="Player 2" autocomplete="off" maxlength="20">
@@ -33,6 +40,7 @@
           <option value="hard">Hard</option>
         </select>
       </div>
+      <div id="matchWrap">
       <label for="length">Match length</label>
       <select id="length">
         <option value="tiebreak">Tiebreak only, first to 7</option>
@@ -46,10 +54,12 @@
         <option value="clay">Clay, slower, fewer aces</option>
         <option value="grass">Grass, faster, more aces</option>
       </select>
+      </div>
       <div id="hideWrap" hidden>
         <label><input type="checkbox" id="hide" checked> Hide choices between turns</label>
       </div>
-      <button type="submit">Start match</button>
+      <p id="setupMsg" role="alert"></p>
+      <button type="submit" id="startBtn">Start match</button>
     </form>
     <details>
       <summary>How to play</summary>
@@ -58,8 +68,15 @@
       <p>Crosscourt is safe. Down the line changes direction, so it pushes harder but misses more. Forehands hit harder than backhands. When a ball comes to your backhand and you are balanced, you can run around it for an inside-out or inside-in forehand, but it leaves your forehand side open.</p>
       <p>Depth and spin matter. Deep balls pin you back. Short balls let you attack. Low slice is hard to attack and hard to volley. Heavy topspin to the backhand is awkward. A short angle pulls your opponent off the court, so the next ball into the open court is a winner, but it sits up if they get there in time.</p>
       <p>Serving: you alternate deuce and ad courts. The returner picks where they think the serve is going and how far back to stand. Flat serves are big but miss often, slice curves away and pulls the returner wide on the deuce side, and kick is safe and jumps up high. After the serve, stay back and cover a side, or serve and volley.</p>
+      <p>Online: one player creates a room and sends the 5-character code. The other picks Join with a room code. If you leave, Rejoin on the start screen picks up where you left off.</p>
       <p>At the net, volleys hit harder, but lobs and passing shots can beat you. Read the lob for an overhead.</p>
     </details>
+  </section>
+
+  <section id="lobby" hidden>
+    <h1 id="lobbyText" tabindex="-1"></h1>
+    <p>Send this code to your friend. The match starts when they join.</p>
+    <button type="button" id="lobbyCancel" class="quiet">Cancel</button>
   </section>
 
   <section id="pass" hidden>
@@ -70,6 +87,7 @@
   <section id="play" hidden>
     <div id="feed" tabindex="-1" class="feed"></div>
     <p id="situation"></p>
+    <p id="waiting" hidden></p>
     <div id="choices">
       <h2 id="prompt" tabindex="-1"></h2>
       <div id="buttons" class="buttons"></div>
@@ -82,7 +100,10 @@
     <button type="button" id="quit" class="quiet">Leave match</button>
   </section>
 </main>
-<script src="engine.js?v=3"></script>
-<script src="ui.js?v=3"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
+<script src="engine.js?v=5"></script>
+<script src="net.js?v=5"></script>
+<script src="ui.js?v=5"></script>
 </body>
 </html>
