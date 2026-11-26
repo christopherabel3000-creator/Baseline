@@ -1,7 +1,7 @@
 (function () {
   'use strict';
   var B = window.Baseline;
-  var SAVE_KEY = 'baseline-save-v1';
+  var SAVE_KEY = 'baseline-save-v2';
   var $ = function (id) { return document.getElementById(id); };
 
   var game = null;   // { m, mode, hide, humans, seen, holder }
@@ -141,31 +141,35 @@
 
   function renderStep() {
     var m = game.m, p = step.player, opts = [], prompt = '', sit = '';
-    var serveWord = (m.serveNum === 1 ? 'first' : 'second') + ' serve';
     if (step.type === 'read') {
-      sit = m.names[m.server] + ' to serve, ' + serveWord + '.';
-      prompt = who(p) + 'read the serve';
-      opts = B.LOCS.map(function (l) { return [l, B.LOC_LABELS[l]]; });
+      sit = m.serveSituation(p);
+      if (step.i === 0) {
+        prompt = who(p) + 'read the serve';
+        opts = B.LOCS.map(function (l) { return [l, B.LOC_LABELS[l]]; });
+      } else {
+        prompt = 'Return position';
+        opts = B.STANCES.map(function (s) { return [s, B.STANCE_LABELS[s]]; });
+      }
     } else if (step.type === 'serve') {
-      sit = 'Your ' + serveWord + '.';
+      sit = m.serveSituation(p);
       if (step.i === 0) {
         prompt = who(p) + 'serve type';
-        opts = [['flat', 'Flat, big but risky'], ['spin', 'Spin, safe']];
+        opts = B.SERVE_TYPES.map(function (t) { return [t, B.SERVE_LABELS[t]]; });
       } else if (step.i === 1) {
         prompt = 'Aim';
         opts = B.LOCS.map(function (l) { return [l, B.LOC_LABELS[l]]; });
       } else {
-        prompt = 'Then cover the return';
-        opts = m.coverOptions('base').map(function (c) { return [c, B.COVER_LABELS[c]]; });
+        prompt = 'After the serve';
+        opts = m.followOptions().map(function (f) { return [f, B.FOLLOW_LABELS[f]]; });
       }
     } else {
       sit = m.situation(p);
       if (step.i === 0) {
         prompt = who(p) + 'your shot';
-        opts = m.shotOptions(p).map(function (s) { return [s, B.SHOT_LABELS[s]]; });
+        opts = m.shotOptions(p).map(function (k) { return [k, m.shotLabel(p, k)]; });
       } else {
-        prompt = 'Then cover';
-        opts = m.coverOptions(m.posAfter(p, step.pick.shot)).map(function (c) { return [c, B.COVER_LABELS[c]]; });
+        prompt = 'Then';
+        opts = m.coverOptions(p, step.pick.shot).map(function (c) { return [c, m.coverLabel(p, step.pick.shot, c)]; });
       }
     }
     $('situation').textContent = sit;
@@ -192,8 +196,10 @@
 
   function choose(v) {
     var m = game.m;
-    if (step.type === 'read') { m.doRead(v); return loop(); }
-    if (step.type === 'serve') {
+    if (step.type === 'read') {
+      if (step.i === 0) step.pick.loc = v;
+      else { m.doRead(step.pick.loc, v); return loop(); }
+    } else if (step.type === 'serve') {
       if (step.i === 0) step.pick.type = v;
       else if (step.i === 1) step.pick.loc = v;
       else { m.doServe(step.pick.type, step.pick.loc, v); return loop(); }
