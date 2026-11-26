@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Baseline</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<main>
+  <section id="setup">
+    <h1>Baseline</h1>
+    <p>Tennis, one shot at a time.</p>
+    <button type="button" id="resume" hidden>Resume saved match</button>
+    <form id="setupForm">
+      <fieldset>
+        <legend>Opponent</legend>
+        <label><input type="radio" name="mode" value="cpu" checked> Computer</label>
+        <label><input type="radio" name="mode" value="pass"> Friend, passing the phone</label>
+      </fieldset>
+      <label for="name1">Your name</label>
+      <input id="name1" type="text" value="Player 1" autocomplete="off" maxlength="20">
+      <div id="name2Wrap" hidden>
+        <label for="name2">Friend's name</label>
+        <input id="name2" type="text" value="Player 2" autocomplete="off" maxlength="20">
+      </div>
+      <div id="diffWrap">
+        <label for="difficulty">Computer level</label>
+        <select id="difficulty">
+          <option value="easy">Easy</option>
+          <option value="normal" selected>Normal</option>
+          <option value="hard">Hard</option>
+        </select>
+      </div>
+      <label for="length">Match length</label>
+      <select id="length">
+        <option value="tiebreak">Tiebreak only, first to 7</option>
+        <option value="one" selected>One set</option>
+        <option value="three">Best of three sets</option>
+        <option value="five">Best of five sets</option>
+      </select>
+      <label for="surface">Court</label>
+      <select id="surface">
+        <option value="hard" selected>Hard court</option>
+        <option value="clay">Clay, slower, fewer aces</option>
+        <option value="grass">Grass, faster, more aces</option>
+      </select>
+      <div id="hideWrap" hidden>
+        <label><input type="checkbox" id="hide" checked> Hide choices between turns</label>
+      </div>
+      <button type="submit">Start match</button>
+    </form>
+    <details>
+      <summary>How to play</summary>
+      <p>Every shot, you choose where to hit, then where to cover your opponent's reply. Your opponent covered a spot with their last shot, so guess where they will not be.</p>
+      <p>If they guessed right, they read it and get an easier ball. If they guessed wrong, they are pushed around, and a big enough shot is a winner. Risky shots miss more often, especially when you are stretched or tired.</p>
+      <p>Serving: the returner guesses wide, body, or down the T first. Flat serves are big but miss often. Spin serves are safe. Body serves rarely ace but jam the returner.</p>
+      <p>Shots: crosscourt is safe. Down the line pushes harder but misses more. A drop shot beats a player stuck on the baseline. A lob beats a player at the net. Approach to come to the net, where volleys hit harder but lobs and passing shots can beat you.</p>
+    </details>
+  </section>
+
+  <section id="pass" hidden>
+    <h1 id="passText" tabindex="-1"></h1>
+    <button type="button" id="passReady"></button>
+  </section>
+
+  <section id="play" hidden>
+    <div id="feed" tabindex="-1" class="feed"></div>
+    <p id="situation"></p>
+    <div id="choices">
+      <h2 id="prompt" tabindex="-1"></h2>
+      <div id="buttons" class="buttons"></div>
+    </div>
+    <div id="endButtons" hidden class="buttons">
+      <button type="button" id="again">Rematch</button>
+      <button type="button" id="newSetup">New match settings</button>
+    </div>
+    <p id="score"></p>
+    <button type="button" id="quit" class="quiet">Leave match</button>
+  </section>
+</main>
+<script src="engine.js"></script>
+<script src="ui.js"></script>
+</body>
+</html>
